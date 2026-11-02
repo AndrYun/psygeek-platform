@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: psygeek_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: psygeek_user
+      POSTGRES_PASSWORD: psygeek_password
+      POSTGRES_DB: psygeek_db
+    ports:
+      - '55432:5432'
+    volumes:
+      - psygeek_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: psygeek_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+volumes:
+  psygeek_postgres_data:
