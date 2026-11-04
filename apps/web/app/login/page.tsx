@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '@/src/features/auth/api/auth-api';
-import { setAccessToken } from '@/src/shared/lib/token';
+import { login } from '@/features/auth/api/auth-api';
+import { setAccessToken } from '@/shared/lib/token';
 
 export default function LoginPage() {
   const router = useRouter();

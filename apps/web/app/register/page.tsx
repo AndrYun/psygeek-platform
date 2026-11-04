@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { register } from '@/src/features/auth/api/auth-api';
-import { setAccessToken } from '@/src/shared/lib/token';
-import type { UserRole } from '@/src/shared/types/auth';
+import { register } from '@/features/auth/api/auth-api';
+import { setAccessToken } from '@/shared/lib/token';
+import type { UserRole } from '@/shared/types/auth';
 
 export default function RegisterPage() {
   const router = useRouter();

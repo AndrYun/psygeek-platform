@@ -25,28 +25,71 @@ model User {
   role         UserRole
   status       UserStatus @default(ACTIVE)
 
-  profile      Profile?
+  profile Profile?
 
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  psychologistRelations TherapistClientRelation[] @relation("PsychologistRelations")
+  clientRelations       TherapistClientRelation[] @relation("ClientRelations")
+  sentInvites           ClientInvite[]            @relation("PsychologistInvites")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("users")
 }
 
 model Profile {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @unique @db.Uuid
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @db.Uuid
 
   firstName String?
   lastName  String?
   avatarUrl String?
   phone     String?
-  timezone  String   @default("Europe/Moscow")
+  timezone  String  @default("Europe/Moscow")
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("profiles")
+}
+
+enum RelationStatus {
+  ACTIVE
+  FINISHED
+  BLOCKED
+}
+
+model TherapistClientRelation {
+  id             String         @id @default(uuid()) @db.Uuid
+  psychologistId String         @db.Uuid
+  clientId       String         @db.Uuid
+  status         RelationStatus @default(ACTIVE)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  psychologist User @relation("PsychologistRelations", fields: [psychologistId], references: [id], onDelete: Cascade)
+  client       User @relation("ClientRelations", fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([psychologistId, clientId])
+  @@index([clientId, status])
+  @@index([psychologistId, status])
+  @@map("therapist_client_relations")
+}
+
+model ClientInvite {
+  id             String    @id @default(uuid()) @db.Uuid
+  psychologistId String    @db.Uuid
+  email          String
+  tokenHash      String    @unique
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  psychologist User @relation("PsychologistInvites", fields: [psychologistId], references: [id], onDelete: Cascade)
+
+  @@index([psychologistId, email])
+  @@index([expiresAt])
+  @@map("client_invites")
 }

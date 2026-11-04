@@ -1,5 +1,5 @@
-import { apiFetch } from '@/src/shared/api/http';
-import type { AuthResponse, User, UserRole } from '@/src/shared/types/auth';
+import { apiFetch } from '@/shared/api/http';
+import type { AuthResponse, User, UserRole } from '@/shared/types/auth';
 
 export type RegisterPayload = {
   email: string;

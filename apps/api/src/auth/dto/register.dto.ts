@@ -1,7 +1,7 @@
-import { UserRole } from '@prisma/client';
+import type { UserRole } from '@prisma/client';
 import {
   IsEmail,
-  IsEnum,
+  IsIn,
   IsOptional,
   IsString,
   MinLength,
@@ -15,7 +15,7 @@ export class RegisterDto {
   @MinLength(8)
   password: string;
 
-  @IsEnum(UserRole)
+  @IsIn(['CLIENT', 'PSYCHOLOGIST'])
   role: UserRole;
 
   @IsOptional()

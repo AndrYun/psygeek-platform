@@ -1,4 +1,4 @@
-import { getAccessToken } from '@/src/shared/lib/token';
+import { getAccessToken } from '@/shared/lib/token';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
