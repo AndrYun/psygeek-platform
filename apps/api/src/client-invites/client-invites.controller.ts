@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
@@ -22,5 +22,11 @@ export class ClientInvitesController {
   @Roles('CLIENT')
   accept(@CurrentUser() user: JwtPayload, @Body('token') token: string) {
     return this.invitesService.accept(user.sub, token);
+  }
+
+  @Get('clients')
+  @Roles('PSYCHOLOGIST')
+  listClients(@CurrentUser() user: JwtPayload) {
+    return this.invitesService.listClients(user.sub);
   }
 }

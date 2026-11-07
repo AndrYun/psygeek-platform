@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/features/auth/api/auth-api';
 import { setAccessToken } from '@/shared/lib/token';
+import { getPostAuthPath } from '@/shared/lib/post-auth-path';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function LoginPage() {
 
       setAccessToken(response.accessToken);
 
-      router.push('/dashboard');
+      router.push(getPostAuthPath());
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Login failed');
     } finally {

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { register } from '@/features/auth/api/auth-api';
 import { setAccessToken } from '@/shared/lib/token';
 import type { UserRole } from '@/shared/types/auth';
+import { getPostAuthPath } from '@/shared/lib/post-auth-path';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function RegisterPage() {
 
       setAccessToken(response.accessToken);
 
-      router.push('/dashboard');
+      router.push(getPostAuthPath());
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Registration failed');
     } finally {

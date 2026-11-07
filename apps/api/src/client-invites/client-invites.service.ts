@@ -199,4 +199,34 @@ export class ClientInvitesService {
   private hashToken(token: string) {
     return createHash('sha256').update(token).digest('hex');
   }
+
+  async listClients(psychologistId: string) {
+    const relations = await this.prisma.therapistClientRelation.findMany({
+      where: {
+        psychologistId,
+        status: 'ACTIVE',
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        client: {
+          select: {
+            id: true,
+            email: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return relations;
+  }
 }
