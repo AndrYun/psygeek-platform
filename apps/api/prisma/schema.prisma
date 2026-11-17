@@ -27,9 +27,11 @@ model User {
 
   profile Profile?
 
-  psychologistRelations TherapistClientRelation[] @relation("PsychologistRelations")
-  clientRelations       TherapistClientRelation[] @relation("ClientRelations")
-  sentInvites           ClientInvite[]            @relation("PsychologistInvites")
+  psychologistRelations    TherapistClientRelation[] @relation("PsychologistRelations")
+  clientRelations          TherapistClientRelation[] @relation("ClientRelations")
+  sentInvites              ClientInvite[]            @relation("PsychologistInvites")
+  psychologistAppointments Appointment[]             @relation("PsychologistAppointments")
+  clientAppointments       Appointment[]             @relation("ClientAppointments")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -68,6 +70,7 @@ model TherapistClientRelation {
   status         RelationStatus @default(ACTIVE)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+  appointments   Appointment[]
 
   psychologist User @relation("PsychologistRelations", fields: [psychologistId], references: [id], onDelete: Cascade)
   client       User @relation("ClientRelations", fields: [clientId], references: [id], onDelete: Cascade)
@@ -92,4 +95,31 @@ model ClientInvite {
   @@index([psychologistId, email])
   @@index([expiresAt])
   @@map("client_invites")
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Appointment {
+  id             String            @id @default(uuid()) @db.Uuid
+  psychologistId String            @db.Uuid
+  clientId       String            @db.Uuid
+  relationId     String            @db.Uuid
+  startsAt       DateTime          @db.Timestamptz(3)
+  endsAt         DateTime          @db.Timestamptz(3)
+  status         AppointmentStatus @default(SCHEDULED)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  psychologist User                    @relation("PsychologistAppointments", fields: [psychologistId], references: [id], onDelete: Restrict)
+  client       User                    @relation("ClientAppointments", fields: [clientId], references: [id], onDelete: Restrict)
+  relation     TherapistClientRelation @relation(fields: [relationId], references: [id], onDelete: Restrict)
+
+  @@index([psychologistId, startsAt])
+  @@index([clientId, startsAt])
+  @@map("appointments")
 }
